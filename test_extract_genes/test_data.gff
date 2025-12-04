@@ -1,0 +1,4 @@
+##gff-version 3
+chr1	.	gene	1	10	.	+	.	ID=gene001;Name=TestGene1
+chr1	.	gene	20	30	.	-	.	ID=gene002;Name=TestGene2
+chr2	.	gene	5	15	.	+	.	ID=gene003;Name=TestGene3
