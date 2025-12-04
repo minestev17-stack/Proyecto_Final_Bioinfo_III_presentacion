@@ -53,9 +53,24 @@ def parse_arguments() -> argparse.Namespace:
             )
         return p
 
+    def min_length_type(s: str) -> int:
+        try:
+            v = int(s)
+        except ValueError:
+            raise argparse.ArgumentTypeError("min-length must be an integer")
+        if v < 0:
+            raise argparse.ArgumentTypeError("min-length must be >= 0")
+        return v
+
     parser.add_argument("--fasta", required=True, type=fasta_type, help="Input genome FASTA (.fa/.fna/.fasta)")
     parser.add_argument("--gff", required=True, type=gff_type, help="Input GFF/GFF3 file (.gff/.gff3)")
     parser.add_argument("--output", required=True, type=output_type, help="Output FASTA file (.fa/.fna/.fasta)")
+    parser.add_argument(
+        "--min-length",
+        type=min_length_type,
+        default=0,
+        help="Minimum gene length to extract (bp). Default: 0 (no filtering)",
+    )
 
     return parser.parse_args()
 
@@ -278,6 +293,10 @@ def main() -> None:
         fasta_dict = load_fasta(args.fasta)
         gff_feats = parse_gff(args.gff)
         gene_seqs = extract_gene_seqs(fasta_dict, gff_feats)
+        # If min-length was provided, filter extracted genes by sequence length
+        if getattr(args, "min_length", 0) and args.min_length > 0:
+            gene_seqs = [g for g in gene_seqs if len(g.get("sequence", "")) >= args.min_length]
+
         write_fasta_output(args.output, gene_seqs)
     except Exception as exc:  # top-level catcher to give a clear exit code
         print(f"Error: {exc}", file=sys.stderr)
