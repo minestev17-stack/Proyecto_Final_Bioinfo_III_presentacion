@@ -42,7 +42,7 @@ class TestReverseComplement:
         """Test reverse complement with mixed case."""
         seq = "AtGc"
         result = _reverse_complement(seq)
-        assert result == "GcAt"
+        assert result == "gCaT"
 
     def test_reverse_complement_long_sequence(self):
         """Test reverse complement of longer sequence."""
