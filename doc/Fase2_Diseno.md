@@ -1,0 +1,3 @@
+# Fase 2 - Diseño
+
+Diseño del programa...
